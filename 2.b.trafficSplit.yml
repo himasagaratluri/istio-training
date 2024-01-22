@@ -1,0 +1,44 @@
+# Two versions of a workload are running inside the cluster - “orders-v1” and “orders-v2”. 
+# A Kubernetes Service resource also uses “app: orders” in its label selector; 
+# both deployments use the version label either set to v1 or v2.
+
+# You’ve been asked to configure a 30-70 traffic split 
+# where 30% of the traffic goes to “orders-v1” and 70% goes to “orders-v2”.
+
+# Create the VirtualService and DestinationRule resources.
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: orders-svc
+spec:
+  hosts:
+    - orders
+  http:
+  - name: orders-30-70
+    route:
+      - destination:
+          host: orders
+          subset: v1
+        weight: 30
+      - destination:
+          host: orders
+          subset: v2
+        weight: 70
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: orders-destination-rule
+spec:
+  host: orders
+  subsets:
+  - name: v1
+    labels:
+      app: orders
+      version: v1
+  - name: v2
+    labels:
+      app: orders
+      version: v2

@@ -1,0 +1,30 @@
+# Create an IstioOperator resource you can use to deploy Istio with the following configuration:
+# Two ingress gateways: 
+# "payments-ingress", deployed to the “payments” namespace
+# “frontend-ingress”, deployed to the “frontend” namespace
+# Single egress gateway:
+# “cluster-egress”, deployed  to the “egress” namespace
+# Also update the Pilot component and set the CPU requests to 750m and memory to 4096Mi.
+
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  profile: default
+  components:
+    ingressGateways:
+      - name: payments-ingress
+        enabled: true
+        namespace: payments
+      - name: frontend-ingress
+        enabled: true
+        namespace: frontend  
+    egressGateways:
+      - name: cluster-egress
+        namespace: egress
+        enabled: true
+    pilot:
+      k8s:
+        resources:
+          requests:
+            memory: 4096Mi
+            cpu: 750m

@@ -1,0 +1,22 @@
+# Write an authorization policy that does the following:
+# The policy applies to workloads with the label “app: customers” in the “default” namespace
+# The policy allows access either from a principal called “cluster.local/ns/default/sa/payments” OR “cluster.local/ns/default/sa/orders”.
+# Access is only allow for the GET operations to “/api” path.
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-payments-and-orders
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: customers
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/default/sa/payments", "cluster.local/ns/default/sa/orders"]
+    to:
+    - operation:
+        methods: ["GET"]
+        paths: ["/api"]

@@ -1,0 +1,10 @@
+# Write an authorization policy that denies access between 
+# all workloads in the namespace called “payments”
+
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: deny-everything
+ namespace: payments
+spec:
+  {}

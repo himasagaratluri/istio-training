@@ -1,0 +1,42 @@
+# You’re given access to the Kubernetes cluster with Istio installed. Two workloads are running in the default namespace: payments and frontend. Both workloads have corresponding Kubernetes services wit the same name. 
+# You want to expose both services through the ingress gateway in the following way:
+# “payments” should be accessible on: “mycompany.com/payments”
+# “frontend” should be accessible on: “mycompany.com”
+# Create a Gateway and VirtualService resource to expose the services.
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: mycompanycom-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "mycompany.com"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mycompanycom-vs
+spec:
+  hosts:
+    - "mycompany.com"
+  gateways:
+    - mycompanycom-gateway
+  http:
+    - name: payments
+      match:
+      - uri:
+          prefix: /payments
+      route:
+        - destination:
+            host: payments.default.svc.cluster.local
+    - name: frontend
+      route:
+        - destination:
+            host: frontend.default.svc.cluster.local

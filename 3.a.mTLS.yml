@@ -1,0 +1,17 @@
+# You want to configure a strict mTLS policy for all workloads in the default namespace with the label
+# "mtls: strict" set. Additionally, you want to disable mTLS for port 9000 (on the same set of workloads).
+# Create a resource that configures these settings.
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: mtls-strictlabeled-ex9000
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      mtls: strict
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    9000:
+      mode: DISABLE
