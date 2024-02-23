@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customers
+spec:
+  hosts:
+    - customers.default.svc.cluster.local
+  # gateways:
+  #   - gateway # Setting this does 50-50 without the following route weights
+  http:
+    - route:
+        - destination:
+            host: customers.default.svc.cluster.local
+            port:
+              number: 80
+            subset: v1
+          weight: 10
+        - destination:
+            host: customers.default.svc.cluster.local
+            port:
+              number: 80
+            subset: v2
+          weight: 90

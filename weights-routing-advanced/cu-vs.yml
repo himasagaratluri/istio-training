@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customers
+spec:
+  hosts:
+    - customers.default.svc.cluster.local
+  # gateways:
+  #   - gateway # Setting this does 50-50 without the following route weights
+  # route to v2 if "user" header matches exactly the string val "debug", other go to v1
+  http:
+    - route:
+        - destination:
+            host: customers.default.svc.cluster.local
+            port:
+              number: 80
+            subset: v1
+    - match:
+        - headers:
+            user:
+              exact: debug
+      route:
+        - destination:
+            host: customers.default.svc.cluster.local
+            port:
+              number: 80
+            subset: v2

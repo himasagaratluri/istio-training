@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: hello-world
+  namespace: frontend
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - frontend/gateway
+  http:
+    - route:
+        - destination:
+            host: hello-world.frontend.svc.cluster.local
+            port:
+              number: 80
